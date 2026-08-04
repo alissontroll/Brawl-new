@@ -222,4 +222,14 @@ function renderPlayer(data) {
 
   const grid = document.getElementById("all-brawlers");
   grid.innerHTML = "";
-  (data.brawlers || []).forEach((b) =>
+  (data.brawlers || []).forEach((b) => {
+    const card = document.createElement("div");
+    card.className = "brawler-card" + (b.maxed ? " maxed" : "");
+    card.innerHTML = `
+      ${b.imageUrl ? `<img src="${b.imageUrl}" alt="">` : ""}
+      <div class="bname">${b.name}</div>
+      <div class="bpower">poder ${b.power}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
