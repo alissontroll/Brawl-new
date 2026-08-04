@@ -2,11 +2,30 @@ const form = document.getElementById("search-form");
 const input = document.getElementById("tag-input");
 const statusMsg = document.getElementById("status-msg");
 const results = document.getElementById("results");
+const rememberCheck = document.getElementById("remember-check");
+
+const STORAGE_KEY = "meubrawl_tag";
+
+// Ao abrir a página: se tiver uma tag salva, preenche e já busca sozinho
+window.addEventListener("DOMContentLoaded", () => {
+  const savedTag = localStorage.getItem(STORAGE_KEY);
+  if (savedTag) {
+    input.value = savedTag;
+    rememberCheck.checked = true;
+    form.requestSubmit();
+  }
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const rawTag = input.value.trim().replace("#", "");
   if (!rawTag) return;
+
+  if (rememberCheck.checked) {
+    localStorage.setItem(STORAGE_KEY, "#" + rawTag);
+  } else {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 
   statusMsg.textContent = "Buscando...";
   results.classList.add("hidden");
