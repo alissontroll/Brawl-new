@@ -14,7 +14,29 @@ window.addEventListener("DOMContentLoaded", () => {
     rememberCheck.checked = true;
     form.requestSubmit();
   }
+  checkGameStatus();
 });
+
+async function checkGameStatus() {
+  const banner = document.getElementById("status-banner");
+  try {
+    const resp = await fetch("/api/status");
+    const data = await resp.json();
+    if (data.status === "maintenance") {
+      banner.textContent = "🛠️ O jogo está em manutenção agora. Os dados podem não carregar por um tempo.";
+      banner.className = "status-banner maintenance";
+    } else if (data.status === "online") {
+      banner.textContent = "🟢 Servidor do jogo no ar";
+      banner.className = "status-banner online";
+    } else {
+      banner.classList.add("hidden");
+      return;
+    }
+    banner.classList.remove("hidden");
+  } catch (err) {
+    banner.classList.add("hidden");
+  }
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
