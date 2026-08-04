@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Brawl — acompanhe sua conta</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="logo-dot"></span>
+      <h1>meu<strong>brawl</strong></h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-block">
+      <h2>Cola sua tag aí</h2>
+      <p class="sub">Tipo #ABC123 — sem espaço, sem "clube deu".</p>
+      <form id="search-form">
+        <input id="tag-input" type="text" placeholder="#2Y8LVLU9" autocomplete="off" required>
+        <button type="submit">Buscar</button>
+      </form>
+      <p id="status-msg" class="status-msg"></p>
+    </section>
+
+    <section id="results" class="results hidden">
+
+      <div class="profile-card">
+        <div class="profile-main">
+          <h2 id="p-name">—</h2>
+          <span id="p-tag" class="tag-chip">—</span>
+        </div>
+        <div class="profile-stats">
+          <div class="stat"><span id="p-trophies">0</span><label>troféus</label></div>
+          <div class="stat"><span id="p-level">0</span><label>nível</label></div>
+          <div class="stat"><span id="p-owned">0</span><label>brawlers</label></div>
+          <div class="stat"><span id="p-club">—</span><label>clube</label></div>
+        </div>
+      </div>
+
+      <div class="focus-today">
+        <span class="eyebrow">hoje o foco é</span>
+        <div id="today-focus-body" class="today-body">—</div>
+      </div>
+
+      <div class="panel">
+        <h3>Ordem de upgrade recomendada</h3>
+        <p class="sub">Do topo pra baixo: quem upar primeiro, segundo o quanto ele te ajuda no jogo hoje.</p>
+        <ol id="focus-list" class="focus-list"></ol>
+      </div>
+
+      <div class="panel">
+        <h3>Todos os seus brawlers</h3>
+        <div id="all-brawlers" class="brawler-grid"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>Dados vêm direto do jogo. As sugestões de upgrade são um guia geral — você pode ajustar como quiser.</p>
+  </footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
