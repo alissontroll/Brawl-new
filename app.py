@@ -76,7 +76,10 @@ def player_data(tag):
     if r.status_code == 403:
         return jsonify({"error": "forbidden", "message": "A chave da API não está autorizada para o IP deste servidor. Veja o README.md."}), 500
     if not r.ok:
-        return jsonify({"error": "upstream", "message": "O servidor do jogo deu erro. Tenta de novo em alguns minutos."}), 502
+        return jsonify({
+            "error": "upstream",
+            "message": f"O servidor do jogo deu erro (código {r.status_code}). Detalhe: {r.text[:200]}"
+        }), 502
 
     player = r.json()
     catalog = get_brawler_catalog()
