@@ -59,6 +59,13 @@ main { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
 
 .status-msg { min-height: 20px; margin-top: 12px; font-size: 14px; color: var(--accent2); font-weight: 600; }
 
+.remember-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 13px; color: var(--text-dim); font-weight: 600;
+  margin-top: 4px; cursor: pointer;
+}
+.remember-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+
 .hidden { display: none !important; }
 
 .profile-card {
