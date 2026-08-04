@@ -1,0 +1,12 @@
+{
+  "name": "Meu Brawl",
+  "short_name": "MeuBrawl",
+  "description": "Acompanhe seus brawlers, troféus e prioridades de upgrade",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121022",
+  "theme_color": "#121022",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
