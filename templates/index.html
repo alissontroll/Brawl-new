@@ -38,6 +38,7 @@
         <input type="checkbox" id="remember-check">
         Lembrar minha tag neste celular
       </label>
+      <div id="recent-list" class="recent-list hidden"></div>
     </section>
 
     <section id="results" class="results hidden">
@@ -53,6 +54,8 @@
           <div class="stat"><span id="p-owned">0</span><label>brawlers</label></div>
           <div class="stat"><span id="p-club">—</span><label>clube</label></div>
         </div>
+        <p id="record-badge" class="record-badge hidden">🏆 Você está no seu recorde de troféus!</p>
+        <button id="share-btn" class="share-btn">🔗 Compartilhar link desse perfil</button>
       </div>
 
       <div class="focus-today">
@@ -84,7 +87,15 @@
 
       <div class="panel">
         <h3>Todos os seus brawlers</h3>
+        <div class="brawler-filters">
+          <input id="brawler-search" type="text" placeholder="Buscar brawler...">
+          <label class="filter-check">
+            <input type="checkbox" id="only-missing-check">
+            Só quem falta upar
+          </label>
+        </div>
         <div id="all-brawlers" class="brawler-grid"></div>
+        <p id="brawler-empty" class="empty-note hidden">Nenhum brawler encontrado com esse filtro.</p>
       </div>
 
     </section>
