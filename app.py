@@ -57,6 +57,35 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/status")
+def game_status():
+    """Cutuca o servidor do jogo com uma tag qualquer só pra ver se ele
+    responde normal ou se está em manutenção agora."""
+    if not BRAWL_API_KEY:
+        return jsonify({"status": "unknown"})
+
+    headers = {"Authorization": f"Bearer {BRAWL_API_KEY}"}
+    try:
+        r = requests.get(f"{OFFICIAL_API_BASE}/players/%23000", headers=headers, timeout=8)
+    except requests.RequestException:
+        return jsonify({"status": "unknown"})
+
+    if r.status_code == 503:
+        try:
+            reason = r.json().get("reason", "")
+        except ValueError:
+            reason = ""
+        if reason == "inMaintenance":
+            return jsonify({"status": "maintenance"})
+        return jsonify({"status": "unknown"})
+
+    # 404 (tag não existe) ou 200 ambos significam que o servidor está no ar
+    if r.status_code in (200, 404):
+        return jsonify({"status": "online"})
+
+    return jsonify({"status": "unknown"})
+
+
 @app.route("/api/player/<path:tag>")
 def player_data(tag):
     if not BRAWL_API_KEY:
@@ -78,6 +107,16 @@ def player_data(tag):
         return jsonify({"error": "not_found", "message": "Não achei nenhum jogador com essa tag. Confere se digitou certo."}), 404
     if r.status_code == 403:
         return jsonify({"error": "forbidden", "message": "A chave da API não está autorizada para o IP deste servidor. Veja o README.md."}), 500
+    if r.status_code == 503:
+        try:
+            reason = r.json().get("reason", "")
+        except ValueError:
+            reason = ""
+        if reason == "inMaintenance":
+            return jsonify({
+                "error": "maintenance",
+                "message": "O jogo está em manutenção agora. Volta daqui a pouco!"
+            }), 503
     if not r.ok:
         return jsonify({
             "error": "upstream",
