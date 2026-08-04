@@ -5,15 +5,26 @@ const results = document.getElementById("results");
 const rememberCheck = document.getElementById("remember-check");
 
 const STORAGE_KEY = "meubrawl_tag";
+const RECENT_KEY = "meubrawl_recent";
+const LAST_FOCUS_KEY_PREFIX = "meubrawl_lastfocus_";
 
-// Ao abrir a página: se tiver uma tag salva, preenche e já busca sozinho
+let currentBrawlers = []; // guardado pra poder filtrar sem buscar de novo
+
+// Ao abrir a página: link direto (?tag=) tem prioridade, depois a tag salva
 window.addEventListener("DOMContentLoaded", () => {
+  const urlTag = new URLSearchParams(window.location.search).get("tag");
   const savedTag = localStorage.getItem(STORAGE_KEY);
-  if (savedTag) {
+
+  if (urlTag) {
+    input.value = urlTag.startsWith("#") ? urlTag : "#" + urlTag;
+    form.requestSubmit();
+  } else if (savedTag) {
     input.value = savedTag;
     rememberCheck.checked = true;
     form.requestSubmit();
   }
+
+  renderRecentList();
   checkGameStatus();
 });
 
@@ -40,7 +51,7 @@ async function checkGameStatus() {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const rawTag = input.value.trim().replace("#", "");
+  const rawTag = input.value.trim().replace("#", "").toUpperCase();
   if (!rawTag) return;
 
   if (rememberCheck.checked) {
@@ -65,6 +76,10 @@ form.addEventListener("submit", async (e) => {
     renderPlayer(data);
     saveTrophyHistory(rawTag, data.trophies);
     renderTrophyChart(rawTag);
+    checkPersonalRecord(data);
+    checkFocusChanged(rawTag, data.todayFocus);
+    saveRecentSearch(rawTag, data.name);
+    setupShareButton(rawTag);
     results.classList.remove("hidden");
 
     loadBattlelog(rawTag);
@@ -77,6 +92,84 @@ form.addEventListener("submit", async (e) => {
     statusMsg.textContent = "Não consegui conectar. Confere sua internet.";
   }
 });
+
+// ---------- Histórico de buscas recentes ----------
+function saveRecentSearch(rawTag, name) {
+  let recent = [];
+  try { recent = JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { recent = []; }
+
+  recent = recent.filter(r => r.tag !== rawTag);
+  recent.unshift({ tag: rawTag, name: name || rawTag });
+  recent = recent.slice(0, 5);
+
+  localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  renderRecentList();
+}
+
+function renderRecentList() {
+  const box = document.getElementById("recent-list");
+  let recent = [];
+  try { recent = JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { recent = []; }
+
+  if (recent.length === 0) {
+    box.classList.add("hidden");
+    return;
+  }
+
+  box.innerHTML = "";
+  recent.forEach(r => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "recent-chip";
+    chip.textContent = r.name;
+    chip.addEventListener("click", () => {
+      input.value = "#" + r.tag;
+      form.requestSubmit();
+    });
+    box.appendChild(chip);
+  });
+  box.classList.remove("hidden");
+}
+
+// ---------- Compartilhar link direto ----------
+function setupShareButton(rawTag) {
+  const btn = document.getElementById("share-btn");
+  const url = `${window.location.origin}/?tag=${rawTag}`;
+  btn.onclick = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Meu Brawl", url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        btn.textContent = "✅ Link copiado!";
+        setTimeout(() => { btn.textContent = "🔗 Compartilhar link desse perfil"; }, 2000);
+      }
+    } catch (err) {
+      // usuário cancelou o compartilhamento, tudo bem
+    }
+  };
+}
+
+// ---------- Recorde pessoal ----------
+function checkPersonalRecord(data) {
+  const badge = document.getElementById("record-badge");
+  if (data.trophies && data.highestTrophies && data.trophies >= data.highestTrophies) {
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+}
+
+// ---------- Vibração quando o foco do dia muda ----------
+function checkFocusChanged(rawTag, todayFocus) {
+  if (!todayFocus || !navigator.vibrate) return;
+  const key = LAST_FOCUS_KEY_PREFIX + rawTag;
+  const lastFocus = localStorage.getItem(key);
+  if (lastFocus && lastFocus !== todayFocus.name) {
+    navigator.vibrate(150);
+  }
+  localStorage.setItem(key, todayFocus.name);
+}
 
 // ---------- Gráfico de troféus (guardado no próprio celular) ----------
 const HISTORY_PREFIX = "meubrawl_history_";
@@ -211,6 +304,41 @@ document.getElementById("install-btn").addEventListener("click", async () => {
   document.getElementById("install-row").classList.add("hidden");
 });
 
+// ---------- Filtro da lista de brawlers ----------
+const brawlerSearch = document.getElementById("brawler-search");
+const onlyMissingCheck = document.getElementById("only-missing-check");
+
+function applyBrawlerFilter() {
+  const query = brawlerSearch.value.trim().toLowerCase();
+  const onlyMissing = onlyMissingCheck.checked;
+
+  const filtered = currentBrawlers.filter(b => {
+    const matchesName = b.name.toLowerCase().includes(query);
+    const matchesMissing = !onlyMissing || !b.maxed;
+    return matchesName && matchesMissing;
+  });
+
+  renderBrawlerGrid(filtered);
+  document.getElementById("brawler-empty").classList.toggle("hidden", filtered.length > 0);
+}
+brawlerSearch.addEventListener("input", applyBrawlerFilter);
+onlyMissingCheck.addEventListener("change", applyBrawlerFilter);
+
+function renderBrawlerGrid(brawlers) {
+  const grid = document.getElementById("all-brawlers");
+  grid.innerHTML = "";
+  brawlers.forEach((b) => {
+    const card = document.createElement("div");
+    card.className = "brawler-card" + (b.maxed ? " maxed" : "");
+    card.innerHTML = `
+      ${b.imageUrl ? `<img src="${b.imageUrl}" alt="">` : ""}
+      <div class="bname">${b.name}</div>
+      <div class="bpower">poder ${b.power}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
 function renderPlayer(data) {
   document.getElementById("p-name").textContent = data.name || "—";
   document.getElementById("p-tag").textContent = data.tag || "—";
@@ -242,16 +370,9 @@ function renderPlayer(data) {
     focusList.appendChild(li);
   });
 
-  const grid = document.getElementById("all-brawlers");
-  grid.innerHTML = "";
-  (data.brawlers || []).forEach((b) => {
-    const card = document.createElement("div");
-    card.className = "brawler-card" + (b.maxed ? " maxed" : "");
-    card.innerHTML = `
-      ${b.imageUrl ? `<img src="${b.imageUrl}" alt="">` : ""}
-      <div class="bname">${b.name}</div>
-      <div class="bpower">poder ${b.power}</div>
-    `;
-    grid.appendChild(card);
-  });
+  currentBrawlers = data.brawlers || [];
+  brawlerSearch.value = "";
+  onlyMissingCheck.checked = false;
+  renderBrawlerGrid(currentBrawlers);
+  document.getElementById("brawler-empty").classList.add("hidden");
 }
