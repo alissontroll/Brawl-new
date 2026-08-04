@@ -114,3 +114,44 @@ main { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
 .brawler-card.maxed { opacity: 0.55; }
 
 footer { text-align: center; color: var(--text-dim); font-size: 12px; padding: 20px; }
+
+/* gráfico de troféus */
+.trophy-chart { margin-top: 14px; }
+.trophy-chart svg { width: 100%; height: 90px; display: block; }
+.trophy-chart .empty { color: var(--text-dim); font-size: 13px; padding: 10px 0; }
+
+/* últimas partidas */
+.battle-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.battle-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-panel); border-radius: 14px; padding: 10px 14px;
+  border-left: 4px solid var(--text-dim);
+}
+.battle-row.win { border-left-color: var(--accent3); }
+.battle-row.loss { border-left-color: var(--accent2); }
+.battle-info { flex: 1; }
+.battle-mode { font-weight: 700; font-size: 13px; }
+.battle-brawlers { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.battle-change { font-weight: 800; font-size: 13px; }
+.battle-change.up { color: var(--accent3); }
+.battle-change.down { color: var(--accent2); }
+
+/* ranking do clube */
+.club-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.club-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-panel); border-radius: 12px; padding: 8px 14px;
+}
+.club-row.me { outline: 2px solid var(--accent); }
+.club-pos { color: var(--text-dim); font-weight: 800; width: 22px; }
+.club-name { flex: 1; font-weight: 700; font-size: 14px; }
+.club-role { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+.club-trophies { color: var(--accent); font-weight: 700; font-size: 13px; }
+.empty-note { color: var(--text-dim); font-size: 13px; }
+
+/* instalar como app */
+.install-row { text-align: center; margin-top: 16px; }
+.install-btn {
+  background: var(--bg-panel-raised); color: var(--text); border: 2px solid var(--accent);
+  border-radius: 12px; padding: 10px 18px; font-weight: 800; font-size: 13px; cursor: pointer;
+}
