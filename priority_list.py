@@ -32,6 +32,10 @@ PRIORITY = {
 
 DEFAULT_PRIORITY = 4  # qualquer brawler fora da lista cai aqui (prioridade baixa)
 
+# A API do jogo manda os nomes em MAIÚSCULO (ex: "SHELLY"), então guardamos
+# uma versão auxiliar da lista toda em maiúsculo pra sempre bater certinho.
+_PRIORITY_UPPER = {name.upper(): value for name, value in PRIORITY.items()}
+
 
 def get_priority(brawler_name: str) -> int:
-    return PRIORITY.get(brawler_name, DEFAULT_PRIORITY)
+    return _PRIORITY_UPPER.get(brawler_name.upper(), DEFAULT_PRIORITY)

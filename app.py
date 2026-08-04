@@ -32,7 +32,10 @@ def get_brawler_catalog():
         resp.raise_for_status()
         catalog = {}
         for b in resp.json().get("list", []):
-            catalog[b["name"]] = {
+            # a API do jogo manda os nomes em MAIÚSCULO, então guardamos
+            # a chave também em maiúsculo pra sempre bater certinho
+            key = b["name"].upper()
+            catalog[key] = {
                 "imageUrl": b.get("imageUrl2") or b.get("imageUrl"),
             }
         _brawler_cache["data"] = catalog
@@ -91,11 +94,11 @@ def player_data(tag):
         trophies = b.get("trophies", 0)
         priority = get_priority(name)
         brawlers.append({
-            "name": name,
+            "name": name.title(),
             "power": power,
             "trophies": trophies,
             "rank": b.get("rank", 0),
-            "imageUrl": catalog.get(name, {}).get("imageUrl", ""),
+            "imageUrl": catalog.get(name.upper(), {}).get("imageUrl", ""),
             "priority": priority,
             "maxed": power >= 11,
         })
@@ -168,7 +171,7 @@ def battlelog(tag):
             for p in flat:
                 if p.get("tag", "").upper() == clean_tag.upper():
                     b = p.get("brawler", {})
-                    used_brawlers.append(b.get("name"))
+                    used_brawlers.append((b.get("name") or "").title())
 
         battles.append({
             "time": item.get("battleTime"),
