@@ -15,7 +15,7 @@ app = Flask(__name__)
 # Pegue sua chave grátis em https://developer.brawlstars.com
 # e coloque como variável de ambiente BRAWL_API_KEY (veja o README.md).
 BRAWL_API_KEY = os.environ.get("BRAWL_API_KEY", "")
-OFFICIAL_API_BASE = "https://api.brawlstars.com/v1"
+OFFICIAL_API_BASE = "https://bsproxy.royaleapi.dev/v1"
 BRAWLAPI_BASE = "https://api.brawlapi.com/v1"  # dados públicos dos brawlers, sem chave
 
 # cache simples em memória pra lista de brawlers (nomes/ícones), atualiza a cada 1h
