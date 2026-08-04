@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meu Brawl — acompanhe sua conta</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#121022">
+<link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
 </head>
 <body>
 
@@ -14,6 +18,10 @@
       <h1>meu<strong>brawl</strong></h1>
     </div>
   </header>
+
+  <div class="install-row hidden" id="install-row">
+    <button id="install-btn" class="install-btn">📲 Instalar como app</button>
+  </div>
 
   <main>
     <section class="search-block">
@@ -51,9 +59,25 @@
       </div>
 
       <div class="panel">
+        <h3>Seus troféus ao longo do tempo</h3>
+        <p class="sub">Vai enchendo sozinho a cada vez que você abrir o site.</p>
+        <div id="trophy-chart" class="trophy-chart"></div>
+      </div>
+
+      <div class="panel">
         <h3>Ordem de upgrade recomendada</h3>
         <p class="sub">Do topo pra baixo: quem upar primeiro, segundo o quanto ele te ajuda no jogo hoje.</p>
         <ol id="focus-list" class="focus-list"></ol>
+      </div>
+
+      <div class="panel">
+        <h3>Últimas partidas</h3>
+        <div id="battle-list" class="battle-list"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Ranking do clube</h3>
+        <div id="club-list" class="club-list"></div>
       </div>
 
       <div class="panel">
