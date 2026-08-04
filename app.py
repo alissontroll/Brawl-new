@@ -117,6 +117,7 @@ def player_data(tag):
         "highestTrophies": player.get("highestTrophies"),
         "expLevel": player.get("expLevel"),
         "club": (player.get("club") or {}).get("name"),
+        "clubTag": (player.get("club") or {}).get("tag"),
         "3vs3Victories": player.get("3vs3Victories"),
         "soloVictories": player.get("soloVictories"),
         "duoVictories": player.get("duoVictories"),
@@ -126,6 +127,84 @@ def player_data(tag):
         "todayFocus": today_focus,
     }
     return jsonify(result)
+
+
+@app.route("/api/player/<path:tag>/battlelog")
+def battlelog(tag):
+    if not BRAWL_API_KEY:
+        return jsonify({"error": "config", "message": "Chave da API não configurada."}), 500
+
+    clean_tag = normalize_tag(tag)
+    encoded_tag = quote(clean_tag)
+    headers = {"Authorization": f"Bearer {BRAWL_API_KEY}"}
+
+    try:
+        r = requests.get(f"{OFFICIAL_API_BASE}/players/{encoded_tag}/battlelog", headers=headers, timeout=10)
+    except requests.RequestException:
+        return jsonify({"error": "network", "message": "Não consegui buscar as partidas."}), 502
+    if not r.ok:
+        return jsonify({"error": "upstream", "message": "Não consegui buscar as partidas agora."}), 502
+
+    items = r.json().get("items", [])
+    battles = []
+    for item in items[:15]:
+        battle = item.get("battle", {})
+        event = item.get("event", {})
+
+        # descobre resultado (vitória/derrota/empate ou troféus ganhos/perdidos)
+        result = battle.get("result")
+        trophy_change = battle.get("trophyChange")
+
+        # descobre quais brawlers o jogador usou nessa partida
+        used_brawlers = []
+        for side in ("teams", "players"):
+            group = battle.get(side)
+            if not group:
+                continue
+            flat = group if side == "players" else [p for team in group for p in team]
+            for p in flat:
+                if p.get("tag", "").upper() == clean_tag.upper():
+                    b = p.get("brawler", {})
+                    used_brawlers.append(b.get("name"))
+
+        battles.append({
+            "time": item.get("battleTime"),
+            "mode": battle.get("mode") or event.get("mode"),
+            "map": event.get("map"),
+            "result": result,
+            "trophyChange": trophy_change,
+            "brawlers": used_brawlers,
+        })
+
+    return jsonify({"battles": battles})
+
+
+@app.route("/api/club/<path:tag>/members")
+def club_members(tag):
+    if not BRAWL_API_KEY:
+        return jsonify({"error": "config", "message": "Chave da API não configurada."}), 500
+
+    clean_tag = normalize_tag(tag)
+    encoded_tag = quote(clean_tag)
+    headers = {"Authorization": f"Bearer {BRAWL_API_KEY}"}
+
+    try:
+        r = requests.get(f"{OFFICIAL_API_BASE}/clubs/{encoded_tag}/members", headers=headers, timeout=10)
+    except requests.RequestException:
+        return jsonify({"error": "network", "message": "Não consegui buscar o clube."}), 502
+    if not r.ok:
+        return jsonify({"error": "upstream", "message": "Não consegui buscar o clube agora."}), 502
+
+    items = r.json().get("items", [])
+    members = [{
+        "name": m.get("name"),
+        "tag": m.get("tag"),
+        "role": m.get("role"),
+        "trophies": m.get("trophies"),
+    } for m in items]
+    members.sort(key=lambda m: -m["trophies"])
+
+    return jsonify({"members": members})
 
 
 if __name__ == "__main__":
