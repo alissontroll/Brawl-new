@@ -49,6 +49,25 @@ body::before {
   z-index: 0;
 }
 
+/* respingos de tinta decorando os cantos, estilo quadrinho */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle 18px at 6% 12%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 7px at 11% 20%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 4px at 4% 24%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 22px at 94% 78%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 8px at 88% 88%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 5px at 96% 65%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 14px at 90% 8%, var(--ink) 98%, transparent 100%),
+    radial-gradient(circle 5px at 82% 14%, var(--ink) 98%, transparent 100%);
+}
+
 main, .topbar, .install-row, .status-banner { position: relative; z-index: 1; }
 
 /* ---------- topo ---------- */
@@ -74,14 +93,17 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 60px; }
 .search-block h2 {
   font-family: var(--font-display);
   font-size: 40px; margin: 0 0 6px; font-weight: 400; letter-spacing: 0.01em;
-  color: var(--yellow);
-  -webkit-text-stroke: 2px var(--ink);
+  background: linear-gradient(90deg, #ff3d7f, #ffd400, #00e0a4, #4dc4ff, #ff3d7f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 2.5px var(--ink);
   paint-order: stroke fill;
   transform: rotate(-1.5deg);
 }
 .sub { color: var(--cream-dim); font-size: 14px; margin: 0 0 20px; font-weight: 600; }
 
-#search-form { display: flex; gap: 8px; max-width: 420px; margin: 0 auto; }
+#search-form { display: flex; gap: 8px; max-width: 420px; margin: 0 auto; position: relative; }
 #tag-input {
   flex: 1;
   padding: 14px 16px;
@@ -98,6 +120,7 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 60px; }
 #tag-input::placeholder { color: #b3a888; }
 #tag-input:focus { border-color: var(--pink); }
 #search-form button {
+  position: relative;
   padding: 14px 22px;
   border-radius: 12px;
   border: 3px solid var(--ink);
@@ -109,6 +132,18 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 60px; }
   cursor: pointer;
   box-shadow: 4px 4px 0 var(--ink);
   transition: transform 0.05s, box-shadow 0.05s;
+}
+#search-form button::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 30% 100%, rgba(255,140,0,0.9), transparent 55%),
+    radial-gradient(circle at 70% 100%, rgba(255,61,61,0.85), transparent 55%);
+  filter: blur(6px);
+  opacity: 0.85;
+  border-radius: 16px;
 }
 #search-form button:active {
   transform: translate(4px, 4px);
@@ -128,12 +163,20 @@ main { max-width: 640px; margin: 0 auto; padding: 16px 16px 60px; }
 
 /* ---------- status do servidor ---------- */
 .status-banner {
-  max-width: 640px; margin: 14px auto 0; padding: 10px 16px;
-  border-radius: 12px; text-align: center; font-size: 13px; font-weight: 800;
+  max-width: 260px; margin: 14px auto 0; padding: 12px 20px;
+  border-radius: 40px; text-align: center; font-size: 13px; font-weight: 800;
   border: 3px solid var(--ink); font-family: var(--font-chunky);
+  background: var(--ink); letter-spacing: 0.08em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
 }
-.status-banner.maintenance { background: var(--pink); color: var(--ink); }
-.status-banner.online { background: var(--teal); color: var(--ink); }
+.status-banner::before {
+  content: ""; width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px 2px currentColor;
+}
+.status-banner.maintenance { color: var(--pink); }
+.status-banner.online { color: var(--teal); }
 
 /* ---------- histórico de buscas (stickers) ---------- */
 .recent-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
