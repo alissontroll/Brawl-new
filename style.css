@@ -1,0 +1,290 @@
+/* =========================================================================
+   MEU BRAWL — identidade "Arena de Quadrinho"
+   Paleta: roxo-arena escuro + amarelo elétrico + rosa energia + verde vitória
+   Assinatura: painéis com contorno grosso + sombra dura deslocada,
+   fundo com textura de pontinhos (halftone), título com contorno tipo HQ.
+   ========================================================================= */
+
+:root {
+  --ink: #16102b;
+  --bg: #2a1a52;
+  --bg-deep: #1c1140;
+  --yellow: #ffd400;
+  --pink: #ff3d7f;
+  --teal: #00e0a4;
+  --cream: #fff6e0;
+  --cream-dim: #d8cdb0;
+  --panel: var(--cream);
+  --radius: 16px;
+
+  --font-display: "Bangers", "Baloo 2", cursive;
+  --font-chunky: "Baloo 2", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(255,212,0,0.10), transparent 40%),
+    radial-gradient(circle at 85% 92%, rgba(255,61,127,0.14), transparent 42%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--cream);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* textura de pontinhos (halftone) por cima de tudo, bem sutil */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(var(--cream) 1px, transparent 1.4px);
+  background-size: 14px 14px;
+  opacity: 0.045;
+  pointer-events: none;
+  z-index: 0;
+}
+
+main, .topbar, .install-row, .status-banner { position: relative; z-index: 1; }
+
+/* ---------- topo ---------- */
+.topbar { padding: 22px 20px 4px; }
+.topbar-inner { display: flex; align-items: center; gap: 10px; max-width: 640px; margin: 0 auto; }
+.logo-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--yellow); border: 3px solid var(--ink);
+}
+.topbar h1 {
+  font-family: var(--font-display);
+  font-size: 28px; letter-spacing: 0.02em; margin: 0; font-weight: 400;
+  color: var(--cream);
+  -webkit-text-stroke: 1.5px var(--ink);
+  paint-order: stroke fill;
+}
+.topbar h1 strong { color: var(--yellow); -webkit-text-stroke: 1.5px var(--ink); }
+
+main { max-width: 640px; margin: 0 auto; padding: 16px 16px 60px; }
+
+/* ---------- busca ---------- */
+.search-block { text-align: center; padding: 26px 8px 10px; }
+.search-block h2 {
+  font-family: var(--font-display);
+  font-size: 40px; margin: 0 0 6px; font-weight: 400; letter-spacing: 0.01em;
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--ink);
+  paint-order: stroke fill;
+  transform: rotate(-1.5deg);
+}
+.sub { color: var(--cream-dim); font-size: 14px; margin: 0 0 20px; font-weight: 600; }
+
+#search-form { display: flex; gap: 8px; max-width: 420px; margin: 0 auto; }
+#tag-input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 3px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-chunky);
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+#tag-input::placeholder { color: #b3a888; }
+#tag-input:focus { border-color: var(--pink); }
+#search-form button {
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: 3px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: var(--font-chunky);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+#search-form button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.status-msg { min-height: 20px; margin-top: 14px; font-size: 14px; color: var(--pink); font-weight: 700; }
+
+.remember-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 13px; color: var(--cream-dim); font-weight: 700;
+  margin-top: 6px; cursor: pointer;
+}
+.remember-row input { width: 17px; height: 17px; accent-color: var(--yellow); }
+
+.hidden { display: none !important; }
+
+/* ---------- status do servidor ---------- */
+.status-banner {
+  max-width: 640px; margin: 14px auto 0; padding: 10px 16px;
+  border-radius: 12px; text-align: center; font-size: 13px; font-weight: 800;
+  border: 3px solid var(--ink); font-family: var(--font-chunky);
+}
+.status-banner.maintenance { background: var(--pink); color: var(--ink); }
+.status-banner.online { background: var(--teal); color: var(--ink); }
+
+/* ---------- histórico de buscas (stickers) ---------- */
+.recent-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+.recent-chip {
+  background: var(--cream); border: 2.5px solid var(--ink); color: var(--ink);
+  border-radius: 20px; padding: 6px 14px; font-size: 12px; font-family: var(--font-chunky); font-weight: 700;
+  cursor: pointer; box-shadow: 3px 3px 0 var(--ink);
+}
+.recent-chip:nth-child(odd) { transform: rotate(-2deg); }
+.recent-chip:nth-child(even) { transform: rotate(2deg); }
+.recent-chip:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* ---------- painel base (estilo quadrinho) ---------- */
+.profile-card, .panel, .focus-today {
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: var(--radius);
+  border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.profile-card { padding: 22px; margin-top: 28px; }
+.profile-main h2 {
+  margin: 0; font-size: 24px; font-family: var(--font-chunky); font-weight: 800;
+}
+.tag-chip { color: #8a7d5c; font-size: 13px; font-weight: 700; }
+
+.profile-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+.stat {
+  background: var(--bg-deep); border-radius: 12px; padding: 12px 4px; text-align: center;
+  border: 2.5px solid var(--ink);
+}
+.stat span { display: block; font-size: 19px; font-weight: 800; color: var(--yellow); font-family: var(--font-chunky); }
+.stat label { font-size: 10px; color: var(--cream-dim); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+
+.record-badge {
+  margin: 16px 0 0; text-align: center; font-size: 13px; font-weight: 800;
+  color: var(--ink); background: var(--yellow); border: 2.5px solid var(--ink);
+  border-radius: 10px; padding: 9px; font-family: var(--font-chunky); transform: rotate(-1deg);
+}
+.share-btn {
+  display: block; width: 100%; margin-top: 14px; padding: 11px;
+  background: var(--cream); border: 2.5px solid var(--ink); color: var(--ink);
+  border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: var(--font-chunky);
+}
+.share-btn:active { transform: translate(2px, 2px); }
+
+/* ---------- foco do dia (bolha de fala) ---------- */
+.focus-today {
+  margin-top: 20px;
+  background: var(--pink);
+  color: var(--ink);
+  padding: 20px 22px;
+  position: relative;
+}
+.focus-today::after {
+  content: "";
+  position: absolute; left: 34px; bottom: -14px;
+  width: 0; height: 0;
+  border: 14px solid transparent;
+  border-top-color: var(--pink);
+  border-bottom: 0;
+  filter: drop-shadow(0 3px 0 var(--ink));
+}
+.focus-today .eyebrow {
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.75;
+  font-family: var(--font-chunky);
+}
+.today-body { display: flex; align-items: center; gap: 12px; margin-top: 8px; font-weight: 800; font-size: 21px; font-family: var(--font-chunky); }
+.today-body img { width: 46px; height: 46px; border-radius: 10px; background: rgba(255,255,255,0.35); border: 2.5px solid var(--ink); }
+
+/* ---------- painéis de conteúdo ---------- */
+.panel { margin-top: 24px; padding: 20px; }
+.panel h3 { margin: 0 0 2px; font-size: 18px; font-weight: 800; font-family: var(--font-chunky); }
+.panel .sub { color: #8a7d5c; }
+
+.trophy-chart { margin-top: 14px; }
+.trophy-chart svg { width: 100%; height: 90px; display: block; }
+.trophy-chart .empty { color: #8a7d5c; font-size: 13px; padding: 10px 0; font-weight: 600; }
+.trophy-chart polyline { stroke: var(--pink) !important; }
+
+.focus-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.focus-list li {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-deep); color: var(--cream); border-radius: 12px; padding: 10px 14px;
+  border: 2.5px solid var(--ink);
+}
+.focus-list .rank {
+  font-weight: 800; color: var(--ink); background: var(--yellow); width: 22px; height: 22px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;
+  flex-shrink: 0;
+}
+.focus-list img { width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.06); }
+.focus-list .fname { font-weight: 700; flex: 1; font-family: var(--font-chunky); }
+.focus-list .fpower { font-size: 12px; color: var(--yellow); font-weight: 700; }
+
+.brawler-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+#brawler-search {
+  flex: 1; min-width: 140px; padding: 9px 12px; border-radius: 10px;
+  border: 2.5px solid var(--ink); background: var(--bg-deep); color: var(--cream); font-size: 13px;
+}
+.filter-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8a7d5c; font-weight: 700; }
+.filter-check input { width: 15px; height: 15px; accent-color: var(--pink); }
+
+.brawler-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.brawler-card {
+  background: var(--bg-deep); border-radius: 12px; padding: 10px; text-align: center;
+  border: 2.5px solid var(--ink);
+}
+.brawler-card img { width: 48px; height: 48px; border-radius: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.06); }
+.brawler-card .bname { font-size: 12px; font-weight: 700; color: var(--cream); font-family: var(--font-chunky); }
+.brawler-card .bpower { font-size: 11px; color: var(--teal); font-weight: 700; }
+.brawler-card.maxed { opacity: 0.5; }
+.empty-note { color: #8a7d5c; font-size: 13px; font-weight: 600; }
+
+/* ---------- últimas partidas ---------- */
+.battle-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.battle-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-deep); color: var(--cream); border-radius: 12px; padding: 10px 14px;
+  border: 2.5px solid var(--ink); border-left: 6px solid var(--cream-dim);
+}
+.battle-row.win { border-left-color: var(--teal); }
+.battle-row.loss { border-left-color: var(--pink); }
+.battle-info { flex: 1; }
+.battle-mode { font-weight: 700; font-size: 13px; font-family: var(--font-chunky); }
+.battle-brawlers { font-size: 11px; color: var(--cream-dim); margin-top: 2px; }
+.battle-change { font-weight: 800; font-size: 13px; }
+.battle-change.up { color: var(--teal); }
+.battle-change.down { color: var(--pink); }
+
+/* ---------- ranking do clube ---------- */
+.club-list { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.club-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-deep); color: var(--cream); border-radius: 10px; padding: 8px 14px;
+  border: 2px solid var(--ink);
+}
+.club-row.me { border-color: var(--yellow); border-width: 3px; }
+.club-pos { color: var(--cream-dim); font-weight: 800; width: 22px; }
+.club-name { flex: 1; font-weight: 700; font-size: 14px; font-family: var(--font-chunky); }
+.club-role { font-size: 10px; color: var(--cream-dim); text-transform: uppercase; font-weight: 700; }
+.club-trophies { color: var(--yellow); font-weight: 700; font-size: 13px; }
+
+/* ---------- instalar como app ---------- */
+.install-row { text-align: center; margin-top: 18px; }
+.install-btn {
+  background: var(--yellow); color: var(--ink); border: 3px solid var(--ink);
+  border-radius: 12px; padding: 10px 20px; font-weight: 800; font-size: 13px; cursor: pointer;
+  font-family: var(--font-chunky); box-shadow: 3px 3px 0 var(--ink);
+}
+.install-btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+
+footer { text-align: center; color: var(--cream-dim); font-size: 12px; padding: 24px; position: relative; z-index: 1; }
